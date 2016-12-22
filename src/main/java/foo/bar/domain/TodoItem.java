@@ -1,21 +1,30 @@
 package foo.bar.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 /**
  * A TodoList item.
  */
-@Entity
 public class TodoItem {
-    @Id
     private String id;
+    private String name;
+    private boolean completed;
+
+    public TodoItem() { }
+
+    public TodoItem(String id, String name) {
+        this.id = id;
+        this.name = name;
+        this.completed = false;
+    }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getName() {
+        return this.name;
+    }
+
+    public boolean isCompleted() {
+        return this.completed;
     }
 }

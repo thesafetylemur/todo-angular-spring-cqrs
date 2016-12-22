@@ -1,11 +1,11 @@
 package foo.bar.events;
 
-public class TodoListCreatedEvent {
+public class TodoListRenamedEvent {
 
     private final String todoListId;
     private final String name;
 
-    public TodoListCreatedEvent(String todoListId, String name) {
+    public TodoListRenamedEvent(String todoListId, String name) {
         this.todoListId = todoListId;
         this.name = name;
     }

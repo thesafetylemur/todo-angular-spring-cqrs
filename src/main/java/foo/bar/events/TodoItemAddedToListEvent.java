@@ -1,11 +1,28 @@
 package foo.bar.events;
 
 /**
- * Created by chq-joels on 11/17/2016.
+ * Created by joel on 12/22/2016.
  */
 public class TodoItemAddedToListEvent {
+    private final String todoListId;
+    private final String todoItemId;
+    private final String todoItemName;
 
-    public TodoItemAddedToListEvent() {
+    public TodoItemAddedToListEvent(String todoListId, String todoItemId, String todoItemName) {
+        this.todoListId = todoListId;
+        this.todoItemId = todoItemId;
+        this.todoItemName = todoItemName;
+    }
 
+    public String getTodoListId() {
+        return todoListId;
+    }
+
+    public String getTodoItemId() {
+        return todoItemId;
+    }
+
+    public String getTodoItemName() {
+        return todoItemName;
     }
 }

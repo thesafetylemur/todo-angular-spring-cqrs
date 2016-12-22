@@ -1,52 +1,63 @@
 package foo.bar.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import foo.bar.commands.AddTodoItemToListCommand;
+import foo.bar.commands.CreateTodoListCommand;
+import foo.bar.commands.RenameTodoListCommand;
+import foo.bar.events.TodoItemAddedToListEvent;
+import foo.bar.events.TodoListCreatedEvent;
+import foo.bar.events.TodoListRenamedEvent;
+import org.axonframework.commandhandling.CommandHandler;
+import org.axonframework.commandhandling.model.AggregateIdentifier;
+import org.axonframework.eventsourcing.EventSourcingHandler;
+import org.axonframework.spring.stereotype.Aggregate;
+
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * A list of TodoItems.
- */
-@Entity
-public class TodoList {
+import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
 
-    @Id
+@Aggregate
+public class TodoList {
+    @AggregateIdentifier
     private String id;
     private String name;
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<TodoItem> items;
+    private List<TodoItem> todoItems;
 
-    public TodoList(
-            String id,
-            String name) {
-        this.id = id;
-        this.name = name;
+    public TodoList() {
+        this.todoItems = new ArrayList<>();
     }
 
-    public String getId() {
-        return id;
+    @CommandHandler
+    public TodoList(CreateTodoListCommand command) {
+        apply(new TodoListCreatedEvent(command.getTodoListId(), command.getDescription()));
     }
 
-    public void setId(String id) {
-        this.id = id;
+    @EventSourcingHandler
+    public void on(TodoListCreatedEvent event) {
+        this.id = event.getTodoListId();
+        this.name = event.getName();
     }
 
-    public String getName() {
-        return name;
+    @CommandHandler
+    public void renameTodoList(RenameTodoListCommand command) {
+        apply(new TodoListRenamedEvent(command.getTodoListId(), command.getName()));
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @EventSourcingHandler
+    public void on(TodoListRenamedEvent event) {
+        this.name = event.getName();
     }
 
-
-    public List<TodoItem> getItems() {
-        return items;
+    @CommandHandler
+    public void addTodoItemToList(AddTodoItemToListCommand command) {
+        apply(new TodoItemAddedToListEvent(
+                command.getTodoListId(),
+                command.getTodoItemId(),
+                command.getTodoItemName()));
     }
 
-    public void setItems(List<TodoItem> items) {
-        this.items = items;
+    @EventSourcingHandler
+    public void on(TodoItemAddedToListEvent event) {
+        this.todoItems.add(new TodoItem(event.getTodoItemId(), event.getTodoItemName()));
     }
 }

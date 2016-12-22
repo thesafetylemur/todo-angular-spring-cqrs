@@ -1,6 +1,7 @@
 package foo.bar.repo;
 
-import foo.bar.domain.TodoItem;
+
+import foo.bar.models.TodoItemEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,5 +9,5 @@ import org.springframework.stereotype.Repository;
  * JPA repository for TodoItems.
  */
 @Repository
-public interface TodoItemRepo extends JpaRepository<TodoItem, String> {
+public interface TodoItemEntryRepo extends JpaRepository<TodoItemEntry, String> {
 }

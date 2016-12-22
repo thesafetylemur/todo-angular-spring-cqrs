@@ -1,30 +1,27 @@
 package foo.bar.commands;
 
-import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
-import javax.validation.constraints.NotNull;
+import org.axonframework.commandhandling.TargetAggregateIdentifier;
 
 /**
  * Command to create a TodoList.
  */
 public class CreateTodoListCommand extends Command {
+
     @TargetAggregateIdentifier
-    @NotNull
-    private final String id;
-    private final String name;
+    private final String todoListId;
+    private final String description;
 
-    public CreateTodoListCommand(
-            String id,
-            String name) {
-        this.id = id;
-        this.name = name;
+    public CreateTodoListCommand(String todoListId, String name) {
+        this.todoListId = todoListId;
+        this.description = name;
     }
 
-    public String getId() {
-        return id;
+    public String getTodoListId() {
+        return todoListId;
     }
 
-    public String getName() {
-        return name;
+    public String getDescription() {
+        return description;
     }
 }

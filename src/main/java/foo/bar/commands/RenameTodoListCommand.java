@@ -1,11 +1,15 @@
-package foo.bar.events;
+package foo.bar.commands;
 
-public class TodoListCreatedEvent {
 
+import org.axonframework.commandhandling.TargetAggregateIdentifier;
+
+public class RenameTodoListCommand extends Command{
+
+    @TargetAggregateIdentifier
     private final String todoListId;
     private final String name;
 
-    public TodoListCreatedEvent(String todoListId, String name) {
+    public RenameTodoListCommand(String todoListId, String name) {
         this.todoListId = todoListId;
         this.name = name;
     }
