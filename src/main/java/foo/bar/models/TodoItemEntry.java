@@ -9,18 +9,17 @@ import javax.persistence.*;
 public class TodoItemEntry {
     @Id
     private String todoItemId;
-    @ManyToOne
-    private TodoListEntry todoListEntry;
+    private String todoListId;
     private String name;
-    private boolean completed;
+    private boolean completed;;
+    private boolean archived;
 
     public TodoItemEntry() { }
 
-    public TodoItemEntry(String todoItemId, TodoListEntry todoListEntry, String name, boolean completed) {
+    public TodoItemEntry(String todoItemId, String todoListId, String name) {
         this.todoItemId = todoItemId;
-        this.todoListEntry = todoListEntry;
+        this.todoListId = todoListId;
         this.name = name;
-        this.completed = completed;
     }
 
     public String getTodoItemId() {
@@ -29,6 +28,14 @@ public class TodoItemEntry {
 
     public void setTodoItemId(String todoItemId) {
         this.todoItemId = todoItemId;
+    }
+
+    public String getTodoListId() {
+        return todoListId;
+    }
+
+    public void setTodoListId(String todoListId) {
+        this.todoListId = todoListId;
     }
 
     public String getName() {
@@ -45,5 +52,13 @@ public class TodoItemEntry {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
     }
 }

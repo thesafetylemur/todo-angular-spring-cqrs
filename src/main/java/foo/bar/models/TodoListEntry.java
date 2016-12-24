@@ -1,8 +1,6 @@
 package foo.bar.models;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by joel on 12/22/2016.
@@ -12,11 +10,11 @@ public class TodoListEntry {
     @Id
     private String todoListId;
     private String name;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "todoListEntry", orphanRemoval = true)
-    private List<TodoItemEntry> todoItems;
+    private boolean archived;
+    private int completedCount;
+    private int todoCount;
 
     public TodoListEntry() {
-        this.todoItems = new ArrayList<>();
     }
 
     public TodoListEntry(String todoListId, String name) {
@@ -41,11 +39,27 @@ public class TodoListEntry {
         this.name = name;
     }
 
-    public List<TodoItemEntry> getTodoItems() {
-        return todoItems;
+    public boolean isArchived() {
+        return archived;
     }
 
-    public void setTodoItems(List<TodoItemEntry> todoItems) {
-        this.todoItems = todoItems;
+    public void setArchived(boolean archived) {
+        this.archived = archived;
+    }
+
+    public int getCompletedCount() {
+        return completedCount;
+    }
+
+    public void setCompletedCount(int completedCount) {
+        this.completedCount = completedCount;
+    }
+
+    public int getTodoCount() {
+        return todoCount;
+    }
+
+    public void setTodoCount(int todoCount) {
+        this.todoCount = todoCount;
     }
 }

@@ -1,11 +1,7 @@
 package foo.bar.domain;
 
-import foo.bar.commands.AddTodoItemToListCommand;
-import foo.bar.commands.CreateTodoListCommand;
-import foo.bar.commands.RenameTodoListCommand;
-import foo.bar.events.TodoItemAddedToListEvent;
-import foo.bar.events.TodoListCreatedEvent;
-import foo.bar.events.TodoListRenamedEvent;
+import foo.bar.commands.*;
+import foo.bar.events.*;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
@@ -21,10 +17,10 @@ public class TodoList {
     @AggregateIdentifier
     private String id;
     private String name;
+    private boolean archived;
     private List<TodoItem> todoItems;
 
     public TodoList() {
-        this.todoItems = new ArrayList<>();
     }
 
     @CommandHandler
@@ -49,6 +45,16 @@ public class TodoList {
     }
 
     @CommandHandler
+    public void archiveTodoList(ArchiveTodoListCommand command) {
+        apply(new TodoListArchivedEvent(command.getTodoListId()));
+    }
+
+    @EventSourcingHandler
+    public void on(TodoListArchivedEvent event) {
+        this.archived = true;
+    }
+
+    @CommandHandler
     public void addTodoItemToList(AddTodoItemToListCommand command) {
         apply(new TodoItemAddedToListEvent(
                 command.getTodoListId(),
@@ -58,6 +64,61 @@ public class TodoList {
 
     @EventSourcingHandler
     public void on(TodoItemAddedToListEvent event) {
+        if (this.todoItems == null) {
+            this.todoItems = new ArrayList<>();
+        }
         this.todoItems.add(new TodoItem(event.getTodoItemId(), event.getTodoItemName()));
+    }
+
+    @CommandHandler
+    public void renameTodoItem(RenameTodoItemCommand command) {
+        apply(new TodoItemRenamedEvent(
+                command.getTodoListId(),
+                command.getTodoItemId(),
+                command.getTodoItemName()));
+    }
+
+    @EventSourcingHandler
+    public void on(TodoItemRenamedEvent event) {
+        // TODO: It'd be more efficient to manage the TodoItems in a map so we don't have to loop here...
+        this.todoItems.forEach(item -> {
+            if (item.getId().equals(event.getTodoItemId())) {
+                item.setName(event.getTodoItemName());
+            }
+        });
+    }
+
+    @CommandHandler
+    public void completeTodoItem(CompleteTodoItemCommand command) {
+        apply(new TodoItemCompletedEvent(
+                command.getTodoListId(),
+                command.getTodoItemId()));
+    }
+
+    @EventSourcingHandler
+    public void on(TodoItemCompletedEvent event) {
+        // TODO: It'd be more efficient to manage the TodoItems in a map so we don't have to loop here...
+        this.todoItems.forEach(item -> {
+            if (item.getId().equals(event.getTodoItemId())) {
+                item.setCompleted(true);
+            }
+        });
+    }
+
+    @CommandHandler
+    public void archiveTodoItem(ArchiveTodoItemCommand command) {
+        apply(new TodoItemArchivedEvent(
+                command.getTodoListId(),
+                command.getTodoItemId()));
+    }
+
+    @EventSourcingHandler
+    public void on(TodoItemArchivedEvent event) {
+        // TODO: It'd be more efficient to manage the TodoItems in a map so we don't have to loop here...
+        this.todoItems.forEach(item -> {
+            if (item.getId().equals(event.getTodoItemId())) {
+                item.setArchived(true);
+            }
+        });
     }
 }
