@@ -7,15 +7,12 @@ import foo.bar.models.TodoListEntry;
 import foo.bar.repo.TodoItemEntryRepo;
 import foo.bar.repo.TodoListEntryRepo;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-
-//import foo.bar.repo.TodoItemRepo;
-//import foo.bar.repo.TodoListRepo;
 
 /**
  * Created by joel on 11/17/2016.
@@ -48,21 +45,24 @@ public class TodoListAPI {
     }
 
     @PostMapping
-    public CompletableFuture<String> createTodoList(@RequestBody Map<String, String> request) {
+    public ResponseEntity createTodoList(@RequestBody Map<String, String> request) {
         final String id = UUID.randomUUID().toString();
-        return commandGateway.send(new CreateTodoListCommand(id, request.get("name")));
+        commandGateway.send(new CreateTodoListCommand(id, request.get("name")));
+        // TODO: It'd be nice if we didn't have to query for this after we just created it..
+        // There's gotta be a more efficient way of doing this!
+        return ResponseEntity.ok(todoListEntryRepo.findOne(id));
     }
 
     @PutMapping("/{todoListId}")
-    public CompletableFuture<String> renameTodoList(
+    public void renameTodoList(
             @PathVariable String todoListId,
             @RequestParam String name) {
-        return commandGateway.send(new RenameTodoListCommand(todoListId, name));
+        commandGateway.send(new RenameTodoListCommand(todoListId, name));
     }
 
     @DeleteMapping("/{todoListId}")
-    public CompletableFuture<String> archiveTodoList(@PathVariable String todoListId) {
-        return commandGateway.send(new ArchiveTodoListCommand(todoListId));
+    public void archiveTodoList(@PathVariable String todoListId) {
+        commandGateway.send(new ArchiveTodoListCommand(todoListId));
     }
 
     @GetMapping("/{todoListId}/items")
@@ -71,32 +71,35 @@ public class TodoListAPI {
     }
 
     @PostMapping("/{todoListId}/items")
-    public CompletableFuture<String> createTodoItem(
+    public ResponseEntity createTodoItem(
             @RequestBody Map<String, String> request,
             @PathVariable String todoListId) {
         final String id = UUID.randomUUID().toString();
-        return commandGateway.send(new AddTodoItemToListCommand(todoListId, id, request.get("name")));
+        commandGateway.send(new AddTodoItemToListCommand(todoListId, id, request.get("name")));
+        // TODO: It'd be nice if we didn't have to query for this after we just created it..
+        // There's gotta be a more efficient way of doing this!
+        return ResponseEntity.ok(todoItemEntryRepo.findOne(id));
     }
 
     @PutMapping(value = "/{todoListId}/items/{todoItemId}", params = "name")
-    public CompletableFuture<String> renameTodoItem(
+    public void renameTodoItem(
             @PathVariable String todoListId,
             @PathVariable String todoItemId,
             @RequestParam String name) {
-        return commandGateway.send(new RenameTodoItemCommand(todoListId, todoItemId, name));
+        commandGateway.send(new RenameTodoItemCommand(todoListId, todoItemId, name));
     }
 
     @PutMapping("/{todoListId}/items/{todoItemId}")
-    public CompletableFuture<String> completeTodoItem(
+    public void completeTodoItem(
             @PathVariable String todoListId,
             @PathVariable String todoItemId) {
-        return commandGateway.send(new CompleteTodoItemCommand(todoListId, todoItemId));
+        commandGateway.send(new CompleteTodoItemCommand(todoListId, todoItemId));
     }
 
     @DeleteMapping("/{todoListId}/items/{todoItemId}")
-    public CompletableFuture<String> archiveTodoItem(
+    public void archiveTodoItem(
             @PathVariable String todoListId,
             @PathVariable String todoItemId) {
-        return commandGateway.send(new ArchiveTodoItemCommand(todoListId, todoItemId));
+        commandGateway.send(new ArchiveTodoItemCommand(todoListId, todoItemId));
     }
 }
