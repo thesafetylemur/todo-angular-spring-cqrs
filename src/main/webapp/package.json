@@ -1,0 +1,16 @@
+{
+  "name": "todo-angular-spring-cqrs",
+  "private": true,
+  "version": "0.0.1",
+  "description": "TODO: make a TODO in your app to fill this out...",
+  "repository": "https://github.com/thesafetylemur/todo-angular-spring-cqrs",
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "dependencies": {
+    "angular": "1.5.5",
+    "angular-route": "1.5.5"
+  }
+}

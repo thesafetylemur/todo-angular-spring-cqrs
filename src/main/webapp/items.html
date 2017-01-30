@@ -1,0 +1,9 @@
+<ul>
+    <li>
+        <input type="text" ng-model="todoItemController.newItem">
+        <button ng-click="todoItemController.createTodoItem(todoItemController.newItem)">+</button>
+    </li>
+    <li ng-repeat="item in todoItemController.items">
+        <span ng-bind="item.name"></span>
+    </li>
+</ul>
