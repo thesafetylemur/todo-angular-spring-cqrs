@@ -90,10 +90,15 @@ public class TodoListAPI {
     }
 
     @PutMapping("/{todoListId}/items/{todoItemId}")
-    public void completeTodoItem(
+    public void toggleTodoItem(
             @PathVariable String todoListId,
-            @PathVariable String todoItemId) {
-        commandGateway.send(new CompleteTodoItemCommand(todoListId, todoItemId));
+            @PathVariable String todoItemId,
+            @RequestBody Map<String, String> request) {
+        if (Boolean.parseBoolean(request.get("completed"))) {
+            commandGateway.send(new CompleteTodoItemCommand(todoListId, todoItemId));
+        } else {
+            commandGateway.send(new UncompleteTodoItemCommand(todoListId, todoItemId));
+        }
     }
 
     @DeleteMapping("/{todoListId}/items/{todoItemId}")

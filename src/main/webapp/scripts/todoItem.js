@@ -32,5 +32,10 @@
                 vm.newItem = "";
             });
         }
+
+        vm.toggleCompleted = function(item) {
+            TodoService.toggleTodoItem(item.todoListId, item.todoItemId, item.completed).then(function(response){
+            });
+        }
     }
 })(window.angular);

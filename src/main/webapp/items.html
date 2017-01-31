@@ -4,6 +4,9 @@
         <button ng-click="todoItemController.createTodoItem(todoItemController.newItem)">+</button>
     </li>
     <li ng-repeat="item in todoItemController.items">
+        <input type="checkbox"
+               ng-model="item.completed"
+               ng-change="todoItemController.toggleCompleted(item)">
         <span ng-bind="item.name"></span>
     </li>
 </ul>

@@ -46,11 +46,30 @@
                 })
         };
 
-        this.createTodoItem = function(id, name) {
-            return $http.post(baseUrl + "/" + id + "/items", {"name": name})
+        this.createTodoItem = function(listId, name) {
+            return $http.post(baseUrl + "/" + listId + "/items", {"name": name})
                 .then(function success(response) {
                     return response.data;
                 })
+        }
+
+        // TODO: Consider modifying the item urls to drop the listId.
+
+        this.toggleTodoItem = function (listId, itemId, completed) {
+            return $http.put(baseUrl + "/" + listId + "/items/" + itemId, {"completed": completed})
+                .then(function success(response) {
+                    return response.data;
+                }, function error(response) {
+                    console.log(response);
+                });
+        }
+
+        this.renameTodoItem = function(listId, itemId, name) {
+            return $http.put(baseUrl +  + "/" + listId + "/items/" + itemId, {"name": name});
+        }
+
+        this.archiveTodoItem = function(listId, itemId) {
+            return $http.delete(baseUrl +  + "/" + listId + "/items/" + itemId);
         }
     }
 })(window.angular);

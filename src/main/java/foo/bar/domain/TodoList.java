@@ -106,6 +106,23 @@ public class TodoList {
     }
 
     @CommandHandler
+    public void uncompleteTodoItem(UncompleteTodoItemCommand command) {
+        apply(new TodoItemUncompletedEvent(
+                command.getTodoListId(),
+                command.getTodoItemId()));
+    }
+
+    @EventSourcingHandler
+    public void on(TodoItemUncompletedEvent event) {
+        // TODO: It'd be more efficient to manage the TodoItems in a map so we don't have to loop here...
+        this.todoItems.forEach(item -> {
+            if (item.getId().equals(event.getTodoItemId())) {
+                item.setCompleted(false);
+            }
+        });
+    }
+
+    @CommandHandler
     public void archiveTodoItem(ArchiveTodoItemCommand command) {
         apply(new TodoItemArchivedEvent(
                 command.getTodoListId(),
