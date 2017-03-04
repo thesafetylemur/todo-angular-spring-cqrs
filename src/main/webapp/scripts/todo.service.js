@@ -4,7 +4,7 @@
         .module('TodoService', [])
         .service('TodoService', TodoService);
 
-    function TodoService($http) {
+    function TodoService($http, $q) {
         var baseUrl = "/todoLists";
 
         this.getTodoLists = function() {
@@ -61,6 +61,7 @@
                     return response.data;
                 }, function error(response) {
                     console.log(response);
+                    return $q.reject(reason);
                 });
         }
 

@@ -2,7 +2,8 @@
     'use strict';
     angular
         .module('TodoItem', [
-            'TodoService'
+            'TodoService',
+            'toaster'
         ])
         .config(TodoItemConfig)
         .controller('TodoItemController', TodoItemController);
@@ -13,18 +14,20 @@
             .when('/:listId', {
                 templateUrl: '../items.html',
                 controller: 'TodoItemController',
-                controllerAs: 'todoItemController'
+                controllerAs: 'todoItemController',
+                resolve: {
+                    items: function(TodoService, $route) {
+                        return TodoService.getTodoListItems(
+                                $route.current.params.listId);
+                    }
+                }
             });
     }
 
-    function TodoItemController($routeParams, TodoService) {
+    function TodoItemController($routeParams, toaster, TodoService, items) {
         var vm = this;
         vm.listId = $routeParams.listId;
-        vm.items = [];
-
-        TodoService.getTodoListItems(vm.listId).then(function(response){
-            vm.items = response;
-        });
+        vm.items = items;
 
         vm.createTodoItem = function(item) {
             TodoService.createTodoItem(vm.listId, item).then(function(response){
@@ -34,8 +37,18 @@
         }
 
         vm.toggleCompleted = function(item) {
-            TodoService.toggleTodoItem(item.todoListId, item.todoItemId, item.completed).then(function(response){
-            });
+            TodoService.toggleTodoItem(
+                    item.todoListId,
+                    item.todoItemId,
+                    item.completed
+                ).catch(function() {
+                    // Oops, something broke. Gotta revert our item's state.
+                    item.completed = !item.completed;
+                    toaster.pop(
+                            "error",
+                            "Oops, something broke.",
+                            "Try again later... :(");
+                });
         }
     }
 })(window.angular);
