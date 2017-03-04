@@ -1,0 +1,22 @@
+{
+  "name": "todo-angular-spring-cqrs",
+  "description": "TODO: make a TODO in your app to fill this out...",
+  "main": "",
+  "license": "MIT",
+  "homepage": "https://github.com/thesafetylemur/todo-angular-spring-cqrs",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+  },
+  "dependencies": {
+    "angular": "~1.5.5",
+    "angular-route": "~1.5.5"
+    "AngularJS-Toaster": "angularjs-toaster#^2.1.0"
+  }
+}
